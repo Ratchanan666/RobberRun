@@ -4,29 +4,21 @@ import java.util.ArrayList;
 
 public class Player {
 
-    // ── พิกัดและขนาดพื้นฐาน ───────────────────────────────────────────────
     private int x, y;                         // พิกัดซ้ายบนของตัวละคร
     private final int BASE_WIDTH = 100;       // ความกว้างพื้นฐานตอนยืน
     private final int BASE_HEIGHT = 150;      // ความสูงพื้นฐานตอนยืน
     private final int CROUCH_HEIGHT = 110;    // ความสูงตอนหมอบ
     private int width = BASE_WIDTH;           // ความกว้างปัจจุบัน (เปลี่ยนได้เมื่อหมอบ/กระโดด)
     private int height = BASE_HEIGHT;         // ความสูงปัจจุบัน
-
-    // ── ฟิสิกส์การกระโดด ─────────────────────────────────────────────────
     private int velocityY = 0;                // ความเร็วแกน Y
     private final int gravity = 1;            // แรงโน้มถ่วง (ค่าบวก = ดึงลง)
     private int groundY;                      // ระดับพื้น (พิกัด Y ของ "พื้น")
     private boolean jumping = false;          // กำลังกระโดดอยู่หรือไม่
     private boolean crouching = false;        // กำลังหมอบอยู่หรือไม่
-
-    // ── สถานะอนิเมชัน ───────────────────────────────────────────────────
-    // state: idle, run, jump, crouch, dead
     private String state = "idle";
     private ArrayList<Image> runFrames = new ArrayList<>(); // เฟรมวิ่ง 6 เฟรม
     private Image idleImg, jumpImg, crouchImg, deadImg;     // ภาพเดี่ยวของแต่ละสถานะ
     private int frame = 0, frameDelay = 0;                  // คุมความเร็วเฟรมตอนวิ่ง
-
-    // ── สเกลขณะบูสต์ (ถูกสั่งจาก GamePanel) ────────────────────────────
     private double scale = 1.0;
     public void setScale(double s) { this.scale = s; }
 
@@ -43,13 +35,11 @@ public class Player {
             runFrames.add(new ImageIcon(path).getImage());
 
         }
-
         // โหลดภาพสถานะเดี่ยว
         idleImg   = new ImageIcon("D:/RobberRun/assets/Robber/idle/1_terrorist_1_Idle_001.png").getImage();
         jumpImg   = new ImageIcon("D:/RobberRun/assets/Robber/jump/1_terrorist_1_Jump_001.png").getImage();
         crouchImg = new ImageIcon("D:/RobberRun/assets/Robber/crouch/1_terrorist_1_Crouch_001.png").getImage();
         deadImg   = new ImageIcon("D:/RobberRun/assets/Robber/dead/1_terrorist_1_Dead_001.png").getImage();
-
         state = "run";
     }
 
@@ -84,12 +74,6 @@ public class Player {
             jumping = true;
             velocityY = -23;
             state = "jump";
-
-            // ขยายตัวเล็กน้อยเวลาอยู่กลางอากาศ
-            width  = (int) (BASE_WIDTH  * 1.05);
-            height = (int) (BASE_HEIGHT * 1.05);
-
-            // จูน Y ให้ "เท้า" อยู่พื้นเดิม
             y = groundY - height;
         }
     }
@@ -136,9 +120,18 @@ public class Player {
         }
 
         // คำนวณขนาดหลังสเกล และเลื่อนรูปขึ้นเท่าที่โตขึ้น เพื่อให้ "เท้า" อยู่ระดับเดิม
-        int scaledWidth  = (int) (width  * scale);
+        int scaledWidth = (int) (width * scale);
         int scaledHeight = (int) (height * scale);
+
+        // ✅ ถ้ากำลังกระโดดและมีบูสต์ ให้ขยายเพิ่มอีกนิด (ภาพ jump มักเล็กกว่า run)
+        if (GamePanel.speedBoostActive && state.equals("jump")) {
+            scaledWidth *= 1.1;
+            scaledHeight *= 1.2;
+        }
+
+        // วาดให้เท้าอยู่ระดับเดิม
         int drawY = y - (scaledHeight - height);
+
 
         g.drawImage(imgToDraw, x, drawY, scaledWidth, scaledHeight, null);
     }

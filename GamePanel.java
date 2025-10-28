@@ -53,6 +53,9 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     private int speedBoostTimer = 0;
     private int highScore = 0;
 
+    // ⭐ Added: ฟอนต์และเอฟเฟกต์แบนเนอร์
+    private final Font bannerFont = new Font("Impact", Font.BOLD, 72);
+
     // 🔹 Constructor เริ่มเกม
     public GamePanel() {
         setFocusable(true);
@@ -92,6 +95,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
         // UI แสดงข้อมูล
         drawGameUI(g);
+
+        // ⭐ Added: แสดงแบนเนอร์ ACTIVE x2 เมื่อโบนัสเปิดอยู่
+        if (bonusActive) {
+            drawActiveX2Banner((Graphics2D) g);
+        }
 
         // หน้าจอจบเกม
         if (gameOver) drawGameOver(g);
@@ -338,6 +346,18 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         for (int i = 0; i < life; i++)
             g.drawImage(heartIcon, 20 + (i * 35), 120, 25, 25, null);
     }
+
+    // แสดงข้อความ ACTIVE x2 
+    private void drawActiveX2Banner(Graphics2D g2d) {
+        g2d.setFont(new Font("Impact", Font.BOLD, 40));
+        g2d.setColor(Color.ORANGE);
+        String text = "SCORE x2 ACTIVE";
+        int textWidth = g2d.getFontMetrics().stringWidth(text);
+        int x = (WIDTH - textWidth) / 2;
+        int y = 120; // ตำแหน่งบนจอ
+        g2d.drawString(text, x, y);
+    }
+
 
     /** ✅ วาดหน้าจอเริ่มเกม */
     private void drawStartScreen(Graphics g) {
