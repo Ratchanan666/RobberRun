@@ -8,47 +8,32 @@ public class NormalPolice extends Police {
 
     /** Constructor: โหลดภาพและกำหนดค่าพื้นฐาน */
     public NormalPolice(int x, int speed) {
-        super(x, speed); // เรียก constructor ของคลาสแม่ (Police)
+        super(x, speed); 
         this.width = 120;
         this.height = 130;
         this.y = GamePanel.GROUND_Y - height - 25; // วางให้ยืนบนพื้น
-
-        // ✅ โหลดภาพตำรวจวิ่ง 6 เฟรม (police_run_001.png ถึง police_run_006.png)
         for (int i = 1; i <= 6; i++) {
             String path = String.format("assets/police/police_run_%03d.png", i);
             runFrames.add(new ImageIcon(path).getImage());
         }
     }
-
     /** อัปเดตตำแหน่งและแอนิเมชันของตำรวจ */
     @Override
     public void update() {
-        x -= speed; // เคลื่อนจากขวา → ซ้าย
+        x -= speed; 
         frameDelay++; // หน่วงเวลาเปลี่ยนภาพ
         if (frameDelay >= 5) {
             frame = (frame + 1) % runFrames.size(); // เปลี่ยนภาพต่อเนื่อง
             frameDelay = 0;
         }
     }
-
-    /** วาดตำรวจบนหน้าจอ (พลิกภาพให้หันมาทางซ้าย) */
     @Override
     public void draw(Graphics g) {
         Image img = runFrames.get(frame);
         Graphics2D g2d = (Graphics2D) g;
-
-        // ✅ วาดภาพโดย flip แนวนอนให้หันซ้าย (เพราะโจรอยู่ด้านซ้าย)
         g2d.drawImage(
-            img,
-            x + width,  // ตำแหน่งเริ่มต้น (ใช้ขวาสุดของภาพ)
-            y,          // พิกัดแนวตั้ง
-            -width,     // ความกว้างติดลบเพื่อพลิกภาพ
-            height,     // ความสูงเท่าเดิม
-            null
-        );
+            img, x + width,  y, -width, height,null);
     }
-
-    /** ✅ สร้าง hitbox สำหรับตรวจจับการชนกับ Player */
     @Override
     public Rectangle getBounds() {
         return new Rectangle(x, y, width, height);

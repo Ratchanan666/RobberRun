@@ -2,26 +2,14 @@ import java.awt.*; // ใช้สำหรับวาดกราฟิก
 import javax.swing.*; // ใช้โหลดรูปจากไฟล์
 
 public class Coin {
-
-    // พิกัดและความเร็วของเหรียญ
     private int x, y, speed;
-
-    // ขนาดของเหรียญ
     private int width = 30, height = 30;
-
-    // สถานะว่าเก็บเหรียญไปแล้วหรือยัง
     private boolean collected = false;
-
-    // รูปภาพเหรียญ
     private Image coinImg;
-
-    // Constructor: กำหนดตำแหน่งเริ่มต้นและโหลดรูปภาพ
     public Coin(int x, int y, int speed) {
         this.x = x;
         this.y = y;
         this.speed = speed;
-
-        // ✅ โหลดรูปเหรียญจากโฟลเดอร์ assets
         coinImg = new ImageIcon("assets/ui/coin.png").getImage();
     }
 

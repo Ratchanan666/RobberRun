@@ -5,10 +5,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
-/**
- * คลาส GamePanel
- * หน้าที่: พื้นที่หลักของเกม ควบคุมการวาดภาพ การชน การสร้างศัตรู และการควบคุมคีย์บอร์ด
- */
 public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
     // 🔹 ขนาดจอเกม
@@ -40,23 +36,21 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     private int life = 1;
     private final int MAX_LIFE = 3;
 
-    // 🔹 ระบบความยาก
+    //ระบบความยาก
     private int difficultyTimer = 0;
     private int difficultyLevel = 1;
 
-    // 🔹 พื้นหลัง
+    // พื้นหลัง
     private Image bgImg;
     private int bgX1 = 0, bgX2;
     private int bgSpeed = 8;
 
-    // 🔹 ตัวจับเวลา Speed Boost และคะแนนสูงสุด
+    // ตัวจับเวลา Speed Boost และคะแนนสูงสุด
     private int speedBoostTimer = 0;
     private int highScore = 0;
-
-    // ⭐ Added: ฟอนต์และเอฟเฟกต์แบนเนอร์
     private final Font bannerFont = new Font("Impact", Font.BOLD, 72);
 
-    // 🔹 Constructor เริ่มเกม
+    // Constructor เริ่มเกม
     public GamePanel() {
         setFocusable(true);
         addKeyListener(this);
@@ -66,14 +60,13 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         bgImg = new ImageIcon("assets/bg.jpg").getImage();
         bgX2 = bgImg.getWidth(null);
 
-        // สร้างอ็อบเจกต์เริ่มต้น
+        // สร้างอ็อบเจกต์
         player = new Player(100, HEIGHT - 100);
         policeList = new ArrayList<>();
         heartList = new ArrayList<>();
         coinList = new ArrayList<>();
         potionList = new ArrayList<>();
-
-        timer = new Timer(20, this); // 20ms ต่อเฟรม
+        timer = new Timer(20, this); 
         timer.start();
     }
 
@@ -81,7 +74,6 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
         // วาดพื้นหลัง
         g.drawImage(bgImg, bgX1, 0, WIDTH, HEIGHT, null);
         g.drawImage(bgImg, bgX2, 0, WIDTH, HEIGHT, null);
@@ -96,7 +88,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         // UI แสดงข้อมูล
         drawGameUI(g);
 
-        // ⭐ Added: แสดงแบนเนอร์ ACTIVE x2 เมื่อโบนัสเปิดอยู่
+        // ACTIVE x2 เมื่อโบนัสเปิดอยู่
         if (bonusActive) {
             drawActiveX2Banner((Graphics2D) g);
         }
@@ -194,7 +186,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         }
     }
 
-    /** ✅ อัปเดตเหรียญ */
+    /*อัปเดตเหรียญ */
     private void updateCoins() {
         Iterator<Coin> it = coinList.iterator();
         while (it.hasNext()) {
@@ -206,7 +198,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                 coinCount++;
                 score += bonusActive ? 100 : 50;
                 it.remove();
-                if (coinCount % 10 == 0) {
+                if (coinCount % 100 == 0) {
                     bonusActive = true;
                     bonusTimer = 500;
                 }
@@ -214,7 +206,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         }
     }
 
-    /** ✅ อัปเดตหัวใจ */
+    /*อัปเดตหัวใจ */
     private void updateHearts() {
         Iterator<Heart> it = heartList.iterator();
         while (it.hasNext()) {
@@ -228,7 +220,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         }
     }
 
-    /** ✅ อัปเดต Potion เพิ่มความเร็ว */
+    /*อัปเดต Potion เพิ่มความเร็ว */
     private void updatePotions() {
         Iterator<Potion> it = potionList.iterator();
         while (it.hasNext()) {
@@ -249,18 +241,14 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         }
     }
 
-    /** ✅ ตรวจชน */
+    /*ตรวจชน*/
     private boolean checkCollisionSmooth(Player player, Police police) {
         Rectangle a = player.getBounds(), b = police.getBounds();
         if (a.intersects(b)) return true;
-        if (police instanceof HelicopterPolice h) {
-            int prevX = h.getPrevX();
-            return (prevX > a.x && h.getX() < a.x + a.width);
-        }
         return false;
     }
 
-    /** ✅ จัดการเวลา Boost และ Bonus */
+    /*จัดการเวลา Boost และ Bonus */
     private void handleBoostTimers() {
         if (speedBoostActive && --speedBoostTimer <= 0) {
             speedBoostActive = false;
